@@ -1,0 +1,152 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>无标题文档</title>
+<script src="Js/move.js"></script>
+<link href="css/food.css" rel="stylesheet" type="text/css" />
+<script>
+//获取元素className
+function getByClass(oParent,sclass){
+	var result=[];
+	var aEle=oParent.getElementsByTagName("*");
+	for(var i=0;i<aEle.length;i++){
+		if(aEle[i].className==sclass){
+			result.push(aEle[i]);
+			}
+		}
+		return result;
+	}
+window.onload=function(){
+	var oPlay=document.getElementById("playImages");
+	var oPre=getByClass(oPlay,'pre')[0];//前一张
+	var oNext=getByClass(oPlay,'next')[0];//后一张
+	var oMLeft=getByClass(oPlay,'mLeft')[0];
+	var oMRight=getByClass(oPlay,'mRight')[0];
+	
+	var oBigUl=getByClass(oPlay,'bigImages')[0];
+	var aBigLi=oBigUl.getElementsByTagName("li");
+	var oSmallUl=getByClass(oPlay,'smallImages')[0];
+	var aUlSmall=oSmallUl.getElementsByTagName("ul")[0];
+	var aSmallLi=oSmallUl.getElementsByTagName("li");
+	
+	
+	var nowIndex=2;
+	var now=0;
+	aUlSmall.style.width=aSmallLi.length*aSmallLi[0].offsetWidth+'px';
+	
+	//淡入淡入左右按钮
+	oPre.onmouseover=oMLeft.onmouseover=function(){
+		startMove(oPre,'opacity',100);
+		}
+	oPre.onmouseout=oMLeft.onmouseout=function(){
+		startMove(oPre,'opacity',0);
+		}
+	oNext.onmouseover=oMRight.onmouseover=function(){
+		startMove(oNext,'opacity',100);
+		}
+	oNext.onmouseout=oMRight.onmouseout=function(){
+		startMove(oNext,'opacity',0);
+		}
+
+	
+	
+	//大图显示封装
+	function tab(){
+		aBigLi[now].style.zIndex=nowIndex++;
+			for(var i=0;i<aSmallLi.length;i++){
+                startMove(aSmallLi[i],'opacity',60);
+				}
+				startMove(aSmallLi[now],'opacity',100);
+			aBigLi[now].style.height=0;
+			startMove(aBigLi[now],'height',270);
+			if(now==0){
+				startMove(aUlSmall,'left',0);
+				}
+			else if(now==aSmallLi.length-1){
+				startMove(aUlSmall,'left',-(now-2)*aSmallLi[0].offsetWidth);
+				}
+			else{
+			startMove(aUlSmall,'left',-(now-1)*aSmallLi[0].offsetWidth);
+			}
+		}
+    //小图连接大图显示与透明度设置
+    for(var i=0;i<aSmallLi.length;i++){
+	  aSmallLi[i].index=i;
+	  
+	  aSmallLi[i].onclick=function(){
+		  if(this.index==now)return;
+		  now=this.index;
+		  tab();
+		  };  
+	  aSmallLi[i].onmouseover=function(){
+			  startMove(this,'opacity',100);
+			  };
+	  aSmallLi[i].onmouseout=function(){
+			  if(this.index!=now){
+			  startMove(this,'opacity',60);
+			  };
+		  } 
+		  
+    //前一张下一张图片的功能实现
+	oNext.onclick=function(){
+		now++;
+		if(now==aSmallLi.length){
+			now=0;
+			
+			}
+		tab();
+		}
+	oPre.onclick=function(){
+		now--;
+		if(now==0){
+			now=aSmallLi.length-1;
+			}
+		tab();
+		}
+	
+		}
+		var timer=setInterval(oNext.onclick,2000);
+		oPlay.onmouseover=function(){
+			clearInterval(timer);
+			} 
+		oPlay.onmouseout=function(){
+			timer=setInterval(oNext.onclick,2000);
+			} 
+	}
+</script>
+</head>
+
+<body>
+<div id="playImages" class="play">
+<ul class="bigImages" id="big">
+<div class="pre"></div>
+<div class="next"></div>
+<div class="imgDesc">图片说明...</div>
+<a href="javascript:;" class="mLeft"></a>
+<a href="javascript:;" class="mRight"></a>
+<div class="filter-bg"></div>
+<li style="z-index:1;"><img src="images/f2.jpg" alt="" /></li>
+<li><img src="images/f3.jpg" alt="" /></li>
+<li><img src="images/f4.jpg" alt="" /></li>
+<li><img src="images/f5.jpg" alt="" /></li>
+<li><img src="images/f6.jpg" alt="" /></li>
+<li><img src="images/f7.jpg" alt="" /></li>
+<li><img src="images/f8.jpg" alt="" /></li>
+</ul>
+
+<div class="smallImages" id="small">
+<ul>
+<li style="filter:alpha(opacity:100);opacity:1;"><img src="images/f2.jpg" alt="" /></li>
+<li><img src="images/f3.jpg" alt="" /></li>
+<li><img src="images/f4.jpg" alt="" /></li>
+<li><img src="images/f5.jpg" alt="" /></li>
+<li><img src="images/f6.jpg" alt="" /></li>
+<li><img src="images/f7.jpg" alt="" /></li>
+<li><img src="images/f8.jpg" alt="" /></li>
+
+</ul>
+</div>
+</div>
+</body>
+</html>
